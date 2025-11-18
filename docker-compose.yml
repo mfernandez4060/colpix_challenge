@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - JWT_SECRET=9pF8Q8VY5sM9b5q4sVZLqH2h5XG3c1mUZ0xubjvJj0c=
+      - JWT_EXPIRATION=300000
