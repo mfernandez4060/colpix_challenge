@@ -7,6 +7,7 @@ import java.util.Map;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -41,6 +42,23 @@ public class GlobalExceptionHandler {
 		    );
 	}
 	
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<Map<String, Object>> handleValidationErrors(MethodArgumentNotValidException ex) {
+
+	    Map<String, Object> body = new HashMap<>();
+	    body.put("timestamp", LocalDateTime.now().toString());
+
+	    Map<String, String> errors = new HashMap<>();
+
+	    ex.getBindingResult().getFieldErrors().forEach(error ->
+	        errors.put(error.getField(), error.getDefaultMessage())
+	    );
+
+	    body.put("errors", errors);
+
+	    return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+	}
+
 	private ErrorResponse build(String code, String message) {
 	    return new ErrorResponse(code, message, MDC.get("traceId"));
 	}
