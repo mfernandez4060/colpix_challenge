@@ -74,20 +74,6 @@ class EmployeeServiceTest {
             .isInstanceOf(BadRequestException.class);
     }
 
-    @Test
-    void create_updateExisting_notFound() {
-        EmployeeRequest r = new EmployeeRequest();
-        r.setId(99L);
-        r.setUserName("j");
-        r.setName("n");
-        r.setEmail("e");
-        r.setPassword("pwd");
-
-        when(repo.findById(99L)).thenReturn(Optional.empty());
-
-        assertThatThrownBy(() -> service.create(r))
-                .isInstanceOf(BadRequestException.class);
-    }
 
     @Test
     void getAll_mapsWell() {

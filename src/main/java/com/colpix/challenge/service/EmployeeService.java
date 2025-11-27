@@ -22,8 +22,6 @@ import com.colpix.challenge.service.dto.EmployeeRequest;
 import com.colpix.challenge.service.dto.EmployeeResponse;
 import com.colpix.challenge.service.dto.PasswordUpdateRequest;
 
-import jakarta.persistence.EntityNotFoundException;
-
 @Service
 public class EmployeeService implements IEmployeeService {
 	private static final String UPDATE_EMPLOYEE_REQUEST_TRACE_ID = "Update Employee request={} traceId={}";
@@ -55,13 +53,8 @@ public class EmployeeService implements IEmployeeService {
 	    String traceId = MDC.get(TRACE_ID);
 	    LOG.info(CREATE_EMPLOYEE_REQUEST_TRACE_ID, request.toString(), traceId);
 	    
-        Employee employee;
-        if (request.getId() != null) {
-            employee = employeeRepository.findById(request.getId())
-                    .orElseThrow(() -> new BadRequestException(EMPLOYEE_NOT_FOUND));
-        } else {
-            employee = new Employee();
-        }
+        Employee employee = new Employee();
+
         employee.setUserName(request.getUserName());
         employee.setName(request.getName());
         employee.setEmail(request.getEmail());

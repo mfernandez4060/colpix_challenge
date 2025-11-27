@@ -17,6 +17,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.colpix.challenge.config.JwtUtils;
 import com.colpix.challenge.entity.Employee;
+import com.colpix.challenge.exception.AuthenticationException;
 import com.colpix.challenge.exception.InvalidCredentialsException;
 import com.colpix.challenge.service.dto.LoginRequest;
 import com.colpix.challenge.service.dto.LoginResponse;
@@ -75,7 +76,7 @@ class AuthServiceTest {
         when(employeeService.getByUserName("john")).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.login(req))
-            .isInstanceOf(InvalidCredentialsException.class);
+            .isInstanceOf(AuthenticationException.class);
     }
 
     @Test

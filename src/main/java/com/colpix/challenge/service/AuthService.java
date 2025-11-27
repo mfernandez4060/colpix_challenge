@@ -9,12 +9,14 @@ import org.springframework.stereotype.Service;
 
 import com.colpix.challenge.config.JwtUtils;
 import com.colpix.challenge.entity.Employee;
-import com.colpix.challenge.exception.InvalidCredentialsException;
+import com.colpix.challenge.exception.AuthenticationException;
 import com.colpix.challenge.service.dto.LoginRequest;
 import com.colpix.challenge.service.dto.LoginResponse;
 
 @Service
 public class AuthService implements IAuthService {
+	private static final String AUTHENTICATION_FAILED = "Authentication failed";
+
 	private static final String TRACE_ID = "traceId";
 
 	private static final String LOGOUT_TOKEN_TRACE_ID = "Logout token={} traceId={}";
@@ -50,11 +52,11 @@ public class AuthService implements IAuthService {
 		// Simple hardcoded user for challenge purposes
 		if (!ADMIN.equals(request.getUsername()) || !PASSWORD.equals(request.getPassword())) {
 			Employee user = employeeService.getByUserName(request.getUsername())
-				.orElseThrow(() -> new InvalidCredentialsException());
+				.orElseThrow(() -> new AuthenticationException(AUTHENTICATION_FAILED));
 			
 			if (!employeeService.checkPassword(user, request.getPassword())) {
 				LOG.warn(LOGIN_FAILED_INVALID_PASSWORD_USER_NAME_TRACE_ID, request.getUsername(), traceId);
-				throw new InvalidCredentialsException();
+				throw new AuthenticationException(AUTHENTICATION_FAILED);
 			}
 		}
 		
